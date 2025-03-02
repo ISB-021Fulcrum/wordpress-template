@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS CloudFormation template to deploy WordPress on EC2'
+
+Resources:
+  WordPressInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: 't2.micro'
+      ImageId: 'ami-05b10e08d247fb927'
+      KeyName: 'vockey'
+      SecurityGroups:
+        - Ref: WebServerSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          apt update -y
+          apt install apache2 php php-mysql mysql-client -y
+          systemctl start apache2
+          systemctl enable apache2
+          echo "<?php phpinfo(); ?>" > /var/www/html/index.php
+
+  WebServerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Allow HTTP and SSH access'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  InstancePublicIP:
+    Description: 'Public IP of EC2 instance'
+    Value: !GetAtt WordPressInstance.PublicIp
