@@ -6,8 +6,8 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: 't2.micro'
-      ImageId: 'ami-05b10e08d247fb927'
-      KeyName: 'vockey'
+      ImageId: 'ami-04aa00acb1165b32a'
+      KeyName: 'key1'
       SecurityGroups:
         - Ref: WebServerSecurityGroup
       UserData:
